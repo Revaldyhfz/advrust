@@ -21,3 +21,8 @@ Refactoring is crucial to streamline code and enhance readability. In this case,
 ### Commit 4
 
 The purpose of the test is to illustrate the impact of a long-running operation (sleeping for 5 seconds in this case) on the server's responsiveness to other requests. When accessing the `/sleep` endpoint, the server intentionally delays the response by sleeping for 5 seconds. Subsequently, if a request is made to the `/` endpoint while the `/sleep` request is still processing, the `/` request will be queued and delayed until the `/sleep` request completes.
+
+### Commit 5
+
+
+In a multithreaded server utilizing a ThreadPool, the ThreadPool oversees a set number of worker threads, each persistently awaiting tasks. Upon receiving a job, a worker thread within the ThreadPool picks up the task, executes it, and then promptly becomes ready to process additional tasks. This framework optimizes the handling of concurrent operations by avoiding the need to spawn a new thread for every task, a process that can strain system resources. Instead, the ThreadPool efficiently manages worker threads, ensuring the server can handle multiple tasks simultaneously while maintaining resource efficiency.
