@@ -26,3 +26,7 @@ The purpose of the test is to illustrate the impact of a long-running operation 
 
 
 In a multithreaded server utilizing a ThreadPool, the ThreadPool oversees a set number of worker threads, each persistently awaiting tasks. Upon receiving a job, a worker thread within the ThreadPool picks up the task, executes it, and then promptly becomes ready to process additional tasks. This framework optimizes the handling of concurrent operations by avoiding the need to spawn a new thread for every task, a process that can strain system resources. Instead, the ThreadPool efficiently manages worker threads, ensuring the server can handle multiple tasks simultaneously while maintaining resource efficiency.
+
+### Bonus
+
+The build function replaces the new function in initializing ThreadPool instances. It encapsulates the initialization logic, enhancing code organization and clarity while maintaining the same functionality as new.

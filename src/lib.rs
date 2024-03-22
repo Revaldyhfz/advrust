@@ -11,30 +11,28 @@ pub struct ThreadPool {
 type Job = Box<dyn FnOnce() + Send + 'static>;
 
 impl ThreadPool {
-    pub fn new(size: usize) -> ThreadPool {
-            assert!(size > 0);
+    pub fn build(size: usize) -> ThreadPool {
+        assert!(size > 0);
 
-            let (sender, receiver) = mpsc::channel();
+        let (sender, receiver) = mpsc::channel();
+        let receiver = Arc::new(Mutex::new(receiver));
+        let mut workers = Vec::with_capacity(size);
 
-            let receiver = Arc::new(Mutex::new(receiver));
-
-            let mut workers = Vec::with_capacity(size);
-
-            for id in 0..size {
-                workers.push(Worker::new(id, Arc::clone(&receiver)));
-            }
-
-            ThreadPool { workers, sender }
+        for id in 0..size {
+            workers.push(Worker::new(id, Arc::clone(&receiver)));
         }
+
+        ThreadPool { workers, sender }
+    }
 
     pub fn execute<F>(&self, f: F)
-        where
-            F: FnOnce() + Send + 'static,
-        {
-            let job = Box::new(f);
+    where
+        F: FnOnce() + Send + 'static,
+    {
+        let job = Box::new(f);
 
-            self.sender.send(job).unwrap();
-        }
+        self.sender.send(job).unwrap();
+    }
 }
 
 struct Worker {
@@ -44,14 +42,13 @@ struct Worker {
 
 impl Worker {
     fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
-            let thread = thread::spawn(move || {
-                while let Ok(job) = receiver.lock().unwrap().recv() {
-                    println!("Worker {id} got a job; executing.");
+        let thread = thread::spawn(move || {
+            while let Ok(job) = receiver.lock().unwrap().recv() {
+                println!("Worker {} got a job; executing.", id);
+                job();
+            }
+        });
 
-                    job();
-                }
-            });
-
-            Worker { id, thread }
-        }
+        Worker { id, thread }
+    }
 }
