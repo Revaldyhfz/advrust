@@ -17,3 +17,7 @@ This method also handles potential errors that may occur during reading from the
 Refactoring is crucial to streamline code and enhance readability. In this case, the refactoring aims to eliminate repetition by consolidating the differences into distinct if and else blocks. These blocks handle similar tasks of reading files and writing their contents to the stream. By isolating the discrepancies in status line and filename, the code becomes more concise and easier to maintain. This approach adheres to the principle of DRY (Don't Repeat Yourself), fostering modular and error-resistant code.
 
 ![Commit 3](/assets/images/commit3.png)
+
+### Commit 4
+
+The purpose of the test is to illustrate the impact of a long-running operation (sleeping for 5 seconds in this case) on the server's responsiveness to other requests. When accessing the `/sleep` endpoint, the server intentionally delays the response by sleeping for 5 seconds. Subsequently, if a request is made to the `/` endpoint while the `/sleep` request is still processing, the `/` request will be queued and delayed until the `/sleep` request completes.
